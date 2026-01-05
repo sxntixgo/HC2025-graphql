@@ -1,0 +1,48 @@
+
+services:
+  app:
+    build: .
+    container_name: nosql-injection-app-dev
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - MONGO_URL=mongodb://mongo:27017
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:7
+    container_name: nosql-injection-mongo-dev
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=ctf_challenge
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data_dev:/data/db
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nosql-injection-nginx-dev
+    restart: unless-stopped
+    ports:
+      - "8008:80"
+    volumes:
+      - ./conf/nginx-dev/nginx-dev.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+volumes:
+  mongo_data_dev:
+
+networks:
+  app-network:
+    driver: bridge

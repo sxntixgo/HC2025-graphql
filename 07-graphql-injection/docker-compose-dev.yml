@@ -1,0 +1,32 @@
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        FLAG: ${FLAG}
+    container_name: graphql-injection-app-dev
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: graphql-injection-nginx-dev
+    restart: unless-stopped
+    ports:
+      - "8007:80"
+    volumes:
+      - ./conf/nginx-dev/nginx-dev.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+networks:
+  app-network:
+    driver: bridge
