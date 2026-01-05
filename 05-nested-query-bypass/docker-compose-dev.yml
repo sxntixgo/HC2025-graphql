@@ -1,0 +1,29 @@
+
+services:
+  app:
+    build: .
+    container_name: nested-query-bypass-app-dev
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=development
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nested-query-bypass-nginx-dev
+    restart: unless-stopped
+    ports:
+      - "8005:80"
+    volumes:
+      - ./conf/nginx-dev/nginx-dev.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,36 @@
+
+services:
+  app:
+    build: .
+    container_name: naive-introspection-app-dev
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - FLASK_ENV=development
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: naive-introspection-nginx-dev
+    restart: unless-stopped
+    ports:
+      - "8001:80"
+    volumes:
+      - ./conf/nginx-dev/nginx-dev.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    depends_on:
+      app:
+        condition: service_healthy
+
+networks:
+  app-network:
+    driver: bridge
