@@ -47,7 +47,7 @@ docker-compose -f docker-compose-dev.yml up -d
 ## 📁 Project Structure
 
 ```
-graphql/
+HC2025-graphql/
 ├── 01-naive-introspection/          # Challenge 1
 ├── 02-schema-introspection/         # Challenge 2
 ├── 03-error-message-leakage/        # Challenge 3
